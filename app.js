@@ -37,7 +37,7 @@ const authenticateToken = async (request, response, next) => {
     response.status(401);
     response.send("Invalid JWT Token");
   } else {
-    jsonwebtoken.verify(tokenNumber, "chintu", async (error, payload) => {
+    jsonwebtoken.verify(tokenNumber, "my_token", async (error, payload) => {
       if (error) {
         response.status(401);
         response.send("Invalid JWT Token");
@@ -164,7 +164,7 @@ app.get(
 //login page
 app.post("/login/", async (request, response) => {
   const { username, password } = request.body;
-  const payload = { username: username };
+
   const getData = `
         SELECT * FROM user WHERE username='${username}';
     `;
@@ -178,8 +178,10 @@ app.post("/login/", async (request, response) => {
       userDetails.password
     );
     if (isPasswordMatched) {
-      const jwt = jsonwebtoken.sign(payload, "chintu");
-      response.send({ jwy: jwt });
+      const payload = { username: username };
+      const jwt = jsonwebtoken.sign(payload, "my_token");
+      console.log(jwt);
+      response.send({ jwt });
     } else {
       response.status(400);
       response.send("Invalid Password");
